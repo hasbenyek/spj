@@ -6,7 +6,9 @@ Disini, kami akan membuat Web Server lalu melakukan penyerangan Brute-Force meng
 4. Muhammad Zidan Maulana - 23.83.1022. <br>
 
 ## Membuat Web Server
-1. Install SSH Terlebih dahulu
+1. Install SSH Terlebih dahulu <br> <br>
+![image](https://github.com/user-attachments/assets/afa8bc76-ab40-49e5-9119-898e6e6c0207)
 ```
 sudo apt install openssh-server
 ```
+2. 
