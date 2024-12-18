@@ -4,10 +4,8 @@ Disini, kami akan membuat Web Server lalu melakukan penyerangan Brute-Force meng
 2. Reihan Chafaz Abimanyu - 23.83.1019. <br>
 3. Roval Aprilian Sandi - 23.83.1051. <br>
 4. Muhammad Zidan Maulana - 23.83.1022. <br>
-Untuk spesifikasi server yang kami gunakkan, kaami memberi alokasi RAM sebesar 4GB, dengan Core processor sebanyak 5, dan storage yang digunakan sebesar 50GB. <br>
 <br>
-![Spek Server](https://github.com/user-attachments/assets/8daec64d-cb02-4787-ab3b-5db4167f93d8)
-
+Untuk spesifikasi server yang kami gunakkan, kaami memberi alokasi RAM sebesar 4GB, dengan Core processor sebanyak 5, dan storage yang digunakan sebesar 50GB. <br>
 
 ## Daftar Isi
 <a href="#web">1. Membuat Web Server</a> <br>
