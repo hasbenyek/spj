@@ -5,7 +5,17 @@ Disini, kami akan membuat Web Server lalu melakukan penyerangan Brute-Force meng
 3. Roval Aprilian Sandi - 23.83.1051. <br>
 4. Muhammad Zidan Maulana - 23.83.1022. <br>
 
-## Membuat Web Server
+## Daftar Isi
+<a href="#web">1. Membuat Web Server</a> <br>
+<a href="#bfs">2. Brute-Force before secure </a> <br>
+<a href="#har">3.Hardening/Mitigasi Server dari serangan</a> <br>
+<a href="#rsy">4. Rsync + cron</a> <br>
+<a href="#mon">5. Netdata</a> <br>
+<a href="#apache">6. Apache</a> <br>
+<a href="#test">Uji Coba Server</a> <br>
+
+<h2 id="web">Membuat WEB Server</h2>
+
 1. Install SSH Terlebih dahulu <br> <br>
 ![image](https://github.com/user-attachments/assets/afa8bc76-ab40-49e5-9119-898e6e6c0207)
 ```
@@ -50,4 +60,88 @@ Lalu, kamu dapat menambahkan:
 <img src="https://i.pinimg.com/originals/ed/52/fa/ed52faa044f95e85bf946efa2d116b7f.png" alt="Maxwell Cat">
 ```
 ![image](https://github.com/user-attachments/assets/27bffa7d-6769-4aca-ae54-8a661b9b3578)
+
+6. Akses file tersebut melalui browser, masukkan link ```<alamat ip kamu>/private/info.html```. <br>
+![image](https://github.com/user-attachments/assets/c60413fc-d2f4-4045-9f2f-f08826155615)
+
+<h2 id="bfs">Menyerang Server Before Secure Menggunakan Hydra</h2>
+
+1. Lakukan serangan menggunakan tools hydra, pastikan kamu sudah memiliki passlist.txt. Jika serangan berhasil, outpunya akan sesuai dengan gambar yang dibawah.
+```
+hydra -l <username server kamu> -P passlist.txt ssh://<alamat ip web server kamu>
+```
+![image](https://github.com/user-attachments/assets/9ba09a30-4823-4d7b-9364-13a4bb2137a8)
+
+<h2 id="har">Hardening</h2>
+
+### 1. Proteksi Direktori /private 
+
+1. Buat file Password. Untuk yang bagian admin, dapat kamu ubah sesuai dengan username kamu.
+```
+sudo htpasswd -c /etc/apache2/.htpasswd admin
+```
+![image](https://github.com/user-attachments/assets/3c2db5ba-badf-42df-8fc6-9f98c0875fab)
+
+2. Verifikasi File Password
+```
+cat /etc/apache2/.htpasswd
+```
+![image](https://github.com/user-attachments/assets/e95d4777-be5b-410e-8ffb-284129e7dec8)
+
+3. Edit File konfigurasi Apache
+```
+sudo nano /etc/apache2/apache2.conf
+```
+lalu tambahkan teks berikut:
+```
+<Directory /var/www/html/private>
+    AuthType Basic
+    AuthName "Restricted Content"
+    AuthUserFile /etc/apache2/.htpasswd
+    Require valid-user
+</Directory>
+```
+![image](https://github.com/user-attachments/assets/feedb86a-e571-4d8f-9168-ad3fe04adfc9)
+
+4. Restart Apache
+```
+sudo systemctl restart apache2
+```
+![image](https://github.com/user-attachments/assets/6d9abaf0-8d44-42d4-b3c9-e15266bfde17)
+
+5. Ketik ```<alamat ip kamu>/private``` pada browser kamu. <br>
+![image](https://github.com/user-attachments/assets/5a8de559-4345-4140-889d-0fe9f6436fc5)
+Jika Username dan Password yang dimasukkan sesuai, kamu dapat masuk ke direktori /private. <br>
+![image](https://github.com/user-attachments/assets/fbe82690-1f0f-423f-b76b-c6326613417b)
+Jika gagal, maka page yang muncul adalah seperti ini. <br>
+![image](https://github.com/user-attachments/assets/a48185e8-7a67-4e8e-9da7-87589a67df78)
+
+### Hide Status Apache dan Port
+
+1. Buka File konfigurasi Apache
+```
+nano /etc/apache2/apache2.conf
+```
+lalu tambahkan
+```
+ServerTokens Prod
+ServerSignature Off
+```
+![image](https://github.com/user-attachments/assets/8d4d727a-5907-465d-9879-1a163f3d0e8a)
+
+
+2. Restart Apache dan buka kembali direktori /private pada browser
+```
+sudo systemctl restart apache2
+```
+![image](https://github.com/user-attachments/assets/3734a955-3754-4f9d-aca7-ab4b9b8940ae)
+
+### 3. Nonaktifkan Login Root
+
+1. Masuk ke konfigurasi SSH
+```
+sudo nano /etc/ssh/sshd_config
+```
+Lalu ubah bagian PermitRootLogin menjadi ```PermitRootLogin no```, Lalu restart SSH. <br>
+![image](https://github.com/user-attachments/assets/7aea9b09-e413-4215-8c86-1db4486ce478)
 
