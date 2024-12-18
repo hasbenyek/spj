@@ -9,10 +9,8 @@ Disini, kami akan membuat Web Server lalu melakukan penyerangan Brute-Force meng
 <a href="#web">1. Membuat Web Server</a> <br>
 <a href="#bfs">2. Brute-Force before secure </a> <br>
 <a href="#har">3.Hardening/Mitigasi Server dari serangan</a> <br>
-<a href="#rsy">4. Rsync + cron</a> <br>
-<a href="#mon">5. Netdata</a> <br>
-<a href="#apache">6. Apache</a> <br>
-<a href="#test">Uji Coba Server</a> <br>
+<a href="#bas">4. Brute-force aftter Secure</a> <br>
+
 
 <h2 id="web">Membuat WEB Server</h2>
 
@@ -144,4 +142,37 @@ sudo nano /etc/ssh/sshd_config
 ```
 Lalu ubah bagian PermitRootLogin menjadi ```PermitRootLogin no```, Lalu restart SSH. <br>
 ![image](https://github.com/user-attachments/assets/7aea9b09-e413-4215-8c86-1db4486ce478)
+
+### 4. Rate-Limiting
+
+1. Install tools Fail2Ban
+```
+sudo apt install fail2ban -y
+```
+![image](https://github.com/user-attachments/assets/21537aaa-af76-41a3-8926-d6ded02cef3c)
+
+2. Masuk ke file konfigurasi Fail2Ban
+```
+nano /etc/fail2ban/jail.local
+```
+lalu masukkan tetks berikutt
+```
+[sshd]
+enabled = true
+port = 22
+maxretry = 3
+bantime = 600
+findtime = 600
+```
+![image](https://github.com/user-attachments/assets/7eb8e069-77e0-4edb-b201-486607e7a7c9)
+
+<h2 id="bas">Brute-force after Hardening</h2>
+
+### 4. Penyerangan Brute-force setelah Hardening
+
+1. Lakukan serangan brute-force menggunakan hydra, jika server kamu berhasil untuk di Hardening, maka Hydra tidak akan bisa menyerang server kamu.
+```
+hydra -l <username kamu> -P passlist.txt ssh://192.168.100.72
+```
+![image](https://github.com/user-attachments/assets/688d013b-c45f-4d30-ae92-ddf05082198c)
 
