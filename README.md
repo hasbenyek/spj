@@ -12,7 +12,7 @@ Disini, kami akan membuat Web Server lalu melakukan penyerangan Brute-Force meng
 <a href="#bas">4. Brute-force aftter Secure</a> <br>
 
 
-<h2 id="web">Membuat WEB Server</h2>
+<h2 id="web">1. Membuat WEB Server</h2>
 
 1. Install SSH Terlebih dahulu <br> <br>
 ![image](https://github.com/user-attachments/assets/afa8bc76-ab40-49e5-9119-898e6e6c0207)
@@ -62,7 +62,7 @@ Lalu, kamu dapat menambahkan:
 6. Akses file tersebut melalui browser, masukkan link ```<alamat ip kamu>/private/info.html```. <br>
 ![image](https://github.com/user-attachments/assets/c60413fc-d2f4-4045-9f2f-f08826155615)
 
-<h2 id="bfs">Menyerang Server Before Secure Menggunakan Hydra</h2>
+<h2 id="bfs">2. Menyerang Server Before Secure Menggunakan Hydra</h2>
 
 1. Lakukan serangan menggunakan tools hydra, pastikan kamu sudah memiliki passlist.txt. Jika serangan berhasil, outpunya akan sesuai dengan gambar yang dibawah.
 ```
@@ -70,7 +70,7 @@ hydra -l <username server kamu> -P passlist.txt ssh://<alamat ip web server kamu
 ```
 ![image](https://github.com/user-attachments/assets/9ba09a30-4823-4d7b-9364-13a4bb2137a8)
 
-<h2 id="har">Hardening</h2>
+<h2 id="har">3. Hardening</h2>
 
 ### 1. Proteksi Direktori /private 
 
@@ -114,11 +114,11 @@ Jika Username dan Password yang dimasukkan sesuai, kamu dapat masuk ke direktori
 Jika gagal, maka page yang muncul adalah seperti ini. <br>
 ![image](https://github.com/user-attachments/assets/a48185e8-7a67-4e8e-9da7-87589a67df78)
 
-### Hide Status Apache dan Port
+### 2. Hide Status Apache dan Port
 
 1. Buka File konfigurasi Apache
 ```
-nano /etc/apache2/apache2.conf
+sudo nano /etc/apache2/conf-available/security.conf
 ```
 lalu tambahkan
 ```
@@ -155,7 +155,7 @@ sudo apt install fail2ban -y
 ```
 nano /etc/fail2ban/jail.local
 ```
-lalu masukkan tetks berikutt
+lalu masukkan tetks berikut
 ```
 [sshd]
 enabled = true
@@ -166,9 +166,7 @@ findtime = 600
 ```
 ![image](https://github.com/user-attachments/assets/7eb8e069-77e0-4edb-b201-486607e7a7c9)
 
-<h2 id="bas">Brute-force after Hardening</h2>
-
-### 4. Penyerangan Brute-force setelah Hardening
+<h2 id="bas">4. Brute-force after Hardening</h2>
 
 1. Lakukan serangan brute-force menggunakan hydra, jika server kamu berhasil untuk di Hardening, maka Hydra tidak akan bisa menyerang server kamu.
 ```
