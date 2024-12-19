@@ -95,6 +95,7 @@ sudo nano /etc/apache2/apache2.conf
 lalu tambahkan teks berikut:
 ```
 <Directory /var/www/html/private>
+    AllowOverride All
     AuthType Basic
     AuthName "Restricted Content"
     AuthUserFile /etc/apache2/.htpasswd
@@ -103,13 +104,30 @@ lalu tambahkan teks berikut:
 ```
 ![image](https://github.com/user-attachments/assets/feedb86a-e571-4d8f-9168-ad3fe04adfc9)
 
-4. Restart Apache
+4. Buat file ```.htaccess``` dalam direktori private
+```
+sudo nano /var/www/html/private/.htaccess
+```
+lalu tambahkan
+```
+AuthType Basic
+AuthName "Restricted Area"
+AuthUserFile /etc/apache2/.htpasswd
+Require valid-user
+
+<Files "info.html">
+    Require all granted
+</Files>
+```
+![image](https://github.com/user-attachments/assets/d8af8662-8eda-4bb7-990c-ccb2ebcd18e3)
+
+5. Restart Apache
 ```
 sudo systemctl restart apache2
 ```
 ![image](https://github.com/user-attachments/assets/6d9abaf0-8d44-42d4-b3c9-e15266bfde17)
 
-5. Ketik ```<alamat ip kamu>/private``` pada browser kamu. <br>
+6. Ketik ```<alamat ip kamu>/private``` pada browser kamu. <br>
 ![image](https://github.com/user-attachments/assets/5a8de559-4345-4140-889d-0fe9f6436fc5)
 Jika Username dan Password yang dimasukkan sesuai, kamu dapat masuk ke direktori /private. <br>
 ![image](https://github.com/user-attachments/assets/fbe82690-1f0f-423f-b76b-c6326613417b)
