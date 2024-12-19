@@ -130,7 +130,7 @@ sudo systemctl restart apache2
 6. Ketik ```<alamat ip kamu>/private``` pada browser kamu. <br>
 ![image](https://github.com/user-attachments/assets/5a8de559-4345-4140-889d-0fe9f6436fc5)
 Jika Username dan Password yang dimasukkan sesuai, kamu dapat masuk ke direktori /private. <br>
-![image](https://github.com/user-attachments/assets/fbe82690-1f0f-423f-b76b-c6326613417b)
+![image](https://github.com/user-attachments/assets/fbe82690-1f0f-423f-b76b-c6326613417b) <br>
 Jika gagal, maka page yang muncul adalah seperti ini. <br>
 ![image](https://github.com/user-attachments/assets/a48185e8-7a67-4e8e-9da7-87589a67df78)
 
