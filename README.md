@@ -5,13 +5,12 @@ Disini, kami akan membuat Web Server lalu melakukan penyerangan Brute-Force meng
 3. Roval Aprilian Sandi - 23.83.1051. <br>
 4. Muhammad Zidan Maulana - 23.83.1022. <br>
 <br>
-Untuk spesifikasi server yang kami gunakkan, kaami memberi alokasi RAM sebesar 4GB, dengan Core processor sebanyak 5, dan storage yang digunakan sebesar 50GB. <br>
+Untuk spesifikasi server yang kami gunakkan, kaami memberi alokasi RAM sebesar 4GB, dengan Core processor sebanyak 4, dan storage yang digunakan sebesar 50GB. <br>
 
 ## Daftar Isi
 <a href="#web">1. Membuat Web Server</a> <br>
-<a href="#bfs">2. Brute-Force before secure </a> <br>
-<a href="#har">3.Hardening/Mitigasi Server dari serangan</a> <br>
-<a href="#bas">4. Brute-force aftter Secure</a> <br>
+<a href="#har">2.Hardening/Mitigasi Server dari serangan</a> <br>
+<a href="#bas">3. Brute-force aftter Secure</a> <br>
 
 
 <h2 id="web">1. Membuat WEB Server</h2>
@@ -64,15 +63,8 @@ Lalu, kamu dapat menambahkan:
 6. Akses file tersebut melalui browser, masukkan link ```<alamat ip kamu>/private/info.html```. <br>
 ![image](https://github.com/user-attachments/assets/c60413fc-d2f4-4045-9f2f-f08826155615)
 
-<h2 id="bfs">2. Menyerang Server Before Secure Menggunakan Hydra</h2>
 
-1. Lakukan serangan menggunakan tools hydra, pastikan kamu sudah memiliki passlist.txt. Jika serangan berhasil, outpunya akan sesuai dengan gambar yang dibawah.
-```
-hydra -l <username server kamu> -P passlist.txt ssh://<alamat ip web server kamu>
-```
-![image](https://github.com/user-attachments/assets/9ba09a30-4823-4d7b-9364-13a4bb2137a8)
-
-<h2 id="har">3. Hardening</h2>
+<h2 id="har">2. Hardening</h2>
 
 ### 1. Proteksi Direktori /private 
 
@@ -95,7 +87,6 @@ sudo nano /etc/apache2/apache2.conf
 lalu tambahkan teks berikut:
 ```
 <Directory /var/www/html/private>
-    AllowOverride All
     AuthType Basic
     AuthName "Restricted Content"
     AuthUserFile /etc/apache2/.htpasswd
@@ -104,39 +95,21 @@ lalu tambahkan teks berikut:
 ```
 ![image](https://github.com/user-attachments/assets/feedb86a-e571-4d8f-9168-ad3fe04adfc9)
 
-4. Buat file ```.htaccess``` dalam direktori private
-```
-sudo nano /var/www/html/private/.htaccess
-```
-lalu tambahkan
-```
-AuthType Basic
-AuthName "Restricted Area"
-AuthUserFile /etc/apache2/.htpasswd
-Require valid-user
 
-<Files "info.html">
-    Require all granted
-</Files>
-```
-![image](https://github.com/user-attachments/assets/d8af8662-8eda-4bb7-990c-ccb2ebcd18e3)
-
-5. Restart Apache
+4. Restart Apache
 ```
 sudo systemctl restart apache2
 ```
 ![image](https://github.com/user-attachments/assets/6d9abaf0-8d44-42d4-b3c9-e15266bfde17)
 
-6. Ketik ```<alamat ip kamu>/private``` pada browser kamu. <br>
+5. Ketik ```<alamat ip kamu>/private``` pada browser kamu. <br>
 ![image](https://github.com/user-attachments/assets/5a8de559-4345-4140-889d-0fe9f6436fc5)
 Jika Username dan Password yang dimasukkan sesuai, kamu dapat masuk ke direktori /private. <br>
 ![image](https://github.com/user-attachments/assets/fbe82690-1f0f-423f-b76b-c6326613417b) <br>
 Jika gagal, maka page yang muncul adalah seperti ini. <br>
 ![image](https://github.com/user-attachments/assets/a48185e8-7a67-4e8e-9da7-87589a67df78)
 
-### 2. Hide Status Apache dan Port
-
-1. Buka File konfigurasi Apache
+6. Sembunyikan status port dan versi Apache2. Buka File konfigurasi Apache
 ```
 sudo nano /etc/apache2/conf-available/security.conf
 ```
@@ -148,22 +121,47 @@ ServerSignature Off
 ![image](https://github.com/user-attachments/assets/8d4d727a-5907-465d-9879-1a163f3d0e8a)
 
 
-2. Restart Apache dan buka kembali direktori /private pada browser
+8. Restart Apache dan buka kembali direktori /private pada browser
 ```
 sudo systemctl restart apache2
 ```
 ![image](https://github.com/user-attachments/assets/3734a955-3754-4f9d-aca7-ab4b9b8940ae)
 
-### 3. Nonaktifkan Login Root
-
-1. Masuk ke konfigurasi SSH
+### 2. Menyembunyikan Direktori
+1. Masuk ke konfigurasi Apache2
 ```
-sudo nano /etc/ssh/sshd_config
+sudo nano /etc/apache2/apache2.conf
 ```
-Lalu ubah bagian PermitRootLogin menjadi ```PermitRootLogin no```, Lalu restart SSH. <br>
-![image](https://github.com/user-attachments/assets/7aea9b09-e413-4215-8c86-1db4486ce478)
+lalu tambahkan
+```
+<Directory /var/www/html>
+    Options -Indexes
+</Directory>
+```
+![image](https://github.com/user-attachments/assets/d43f59c3-6c7a-4e98-9a46-44e7fecc9d17)
 
-### 4. Rate-Limiting
+2. Restart Apache2
+```
+systemctl restart apache2
+```
+
+3. Cek direktori ```<ip kamu>/private``` pada browser. Semisal penyerang berhasil masuk, penyerang tidak akan bisa melihat isi dari direktori server tersebut. <br>
+![image](https://github.com/user-attachments/assets/ebfcbe5b-ca30-48b4-9ee8-bdf850ed68e5)
+
+### 3. Batasi ukuran Request HTTP
+
+1. Edit File konfigurasi apache2
+```
+sudo nano /etc/apache2/apache2.conf
+```
+Tambahkan baris ini untuk me-limit body request menjadi 5 mb.
+```
+LimitRequestBody 5242880
+```
+![image](https://github.com/user-attachments/assets/465d15af-8716-4f7b-b1f5-aba163498fce)
+
+
+### 4. Memblokir IP Address yang mencoba untuk login berulang
 
 1. Install tools Fail2Ban
 ```
@@ -177,20 +175,99 @@ nano /etc/fail2ban/jail.local
 ```
 lalu masukkan tetks berikut
 ```
-[sshd]
+[apache-auth]
 enabled = true
-port = 22
+port = 80,443
+filter = apache-auth
+logpath = /var/log/apache2/error.log
 maxretry = 3
 bantime = 600
-findtime = 600
 ```
-![image](https://github.com/user-attachments/assets/7eb8e069-77e0-4edb-b201-486607e7a7c9)
+![image](https://github.com/user-attachments/assets/7e405397-90b7-466d-8ecd-d87ef7e68a87)
 
-<h2 id="bas">4. Brute-force after Hardening</h2>
+3. Restart Fail2Ban
+```
+systemctl restart fail2ban
+```
 
-1. Lakukan serangan brute-force menggunakan hydra, jika server kamu berhasil untuk di Hardening, maka Hydra tidak akan bisa menyerang server kamu.
+### 5. Rate Limiting Untuk Membatasi Request
+
+1. Aktifkan module rate limit
 ```
-hydra -l <username kamu> -P passlist.txt ssh://192.168.100.72
+sudo a2enmod ratelimit
 ```
-![image](https://github.com/user-attachments/assets/688d013b-c45f-4d30-ae92-ddf05082198c)
+
+2. Ubah konfigurasi pada Apache2
+```
+sudo nano /etc/apache2/apache2.conf
+```
+Lalu sesuaikan baris berikut:
+```
+<Directory /var/www/html>
+    SetOutputFilter RATE_LIMIT
+    SetEnv rate-limit 100
+</Directory>
+
+```
+![image](https://github.com/user-attachments/assets/a869a11b-e541-4661-b613-80e7fe866c9e)
+
+3. Restart Apache
+```
+sudo systemctl restart apache2
+```
+
+### 6. Mod Evasive
+
+1. Install Mod Evasive
+```
+sudo apt install libapache2-mod-evasive -y
+```
+![image](https://github.com/user-attachments/assets/300b268b-35b5-4274-8afd-4565a30cb830)
+
+2. Konfigurasi file mod evasive
+```
+sudo nano /etc/apache2/mods-available/evasive.conf
+```
+Sesuaikan konfigurasi menjadi seperti ini:
+```
+<IfModule mod_evasive20.c>
+    DOSHashTableSize 3097
+    DOSPageCount 5
+    DOSSiteCount 50
+    DOSPageInterval 1
+    DOSSiteInterval 1
+    DOSBlockingPeriod 300
+    DOSEmailNotify admin@example.com
+    DOSLogDir "/var/log/mod_evasive"
+</IfModule>
+```
+![image](https://github.com/user-attachments/assets/d0ac14a9-a1ab-4154-8424-2535e2026ca7)
+
+
+3. Buat direktori log
+```
+sudo mkdir /var/log/mod_evasive
+sudo chmod 777 /var/log/mod_evasive
+```
+![image](https://github.com/user-attachments/assets/6dbd8776-9509-4530-9862-26079dca8aeb)
+
+4. Aktifkan modul dan restart Apache2
+```
+sudo a2enmod evasive
+sudo systemctl restart apache2
+```
+![image](https://github.com/user-attachments/assets/169127e1-320e-4ada-bf06-9828638f542f)
+
+
+
+<h2 id="bas">3. Brute-force after Hardening</h2>
+
+1. Lakukan serangan brute-force menggunakan hydra, jika server kamu berhasil untuk di Hardening, maka Hydra tidak akan menampilkan username dan password yang konkrit.
+```
+hydra -L /home/hasbi/wordlist/userlist.txt -P /home/hasbi/Desktop/passlist.txt 192.168.100.95 http-get /private
+```
+![image](https://github.com/user-attachments/assets/55967404-0304-4be3-bb16-d4a684a40e2c) <br>
+![image](https://github.com/user-attachments/assets/bdc49258-25ec-4f0d-b8a0-c01dae333037)
+
+
 
